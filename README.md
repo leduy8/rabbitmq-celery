@@ -50,3 +50,9 @@ To run test:
 ```shell
 sh run.sh test
 ```
+
+
+To run celery broker (In here we use rabbitMQ)
+```shell
+celery -A main.celery worker --loglevel=info
+```

@@ -20,6 +20,8 @@ class BaseConfig:
     SECRET_KEY = os.getenv("SECRET_KEY") or "abcdefg132456"
     ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
     DATABASE_URL = os.getenv("DATABASE_DEV")
+    CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+    CELERY_RESULT_BACKEND = os.getenv("CELERY_BACKEND")
 
 
 class DevelopmentConfig(BaseConfig):
