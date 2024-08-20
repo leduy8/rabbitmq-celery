@@ -1,0 +1,45 @@
+version: '3.8'
+
+networks:
+  fastapi-test:
+    external: true
+
+services:
+  fastapi-webapp:
+    networks:
+      - fastapi-test
+    container_name: fastapi-webapp
+    build: .
+    links:
+      - fastapi-postgres
+    depends_on:
+      fastapi-postgres:
+        condition: service_healthy
+    ports:
+      - "8008:8008"
+    restart: always
+    platform: linux/amd64
+    working_dir: /www/fastapi-test/
+    volumes:
+      - ./:/www/fastapi-test/
+
+  fastapi-postgres:
+    networks:
+      - fastapi-test
+    container_name: fastapi-postgres
+    image: postgres
+    ports:
+      - "5454:5432"
+    platform: linux/amd64
+    healthcheck:
+      test: ["CMD", "/bin/bash", "-c", "pg_isready", "-U", "postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: postgres
+    volumes:
+      - ./.volume/pg_data:/var/lib/postgresql/data
+      - ./scripts/db:/docker-entrypoint-initdb.d
